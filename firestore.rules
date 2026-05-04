@@ -1,0 +1,98 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Core Authorization Helpers ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** 
+     * Direct check for user profile data.
+     * Uses a direct path to avoid recursive rule evaluation.
+     */
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             getUserData().role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('Administrator');
+    }
+
+    /** Checks if user belongs to a specific school or is a global admin. */
+    function isAuthorizedForSchool(schoolId) {
+      return isSignedIn() && (
+        isAdmin() || 
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().schoolId == schoolId)
+      );
+    }
+
+    // --- Collection Rules ---
+
+    match /users/{userId} {
+      // Users can manage their own profile. Admins can manage all.
+      allow read, create, update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list, delete: if isAdmin();
+    }
+
+    match /schools/{schoolId} {
+      // Viewable by global admins or authorized personnel.
+      allow list: if isSignedIn() && isAdmin();
+      allow get: if isAuthorizedForSchool(schoolId);
+      // Managed only by global administrators.
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /schools/{schoolId}/classrooms/{classroomId} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update, delete: if isSignedIn() && (hasRole('Administrator') || hasRole('Principal')) && isAuthorizedForSchool(schoolId);
+    }
+
+    match /schools/{schoolId}/classrooms/{classroomId}/students/{studentId} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update, delete: if isSignedIn() && (hasRole('Administrator') || hasRole('Principal') || hasRole('Teacher')) && isAuthorizedForSchool(schoolId);
+    }
+
+    match /schools/{schoolId}/subjects/{subjectId} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update, delete: if isAdmin() || (hasRole('Principal') && isAuthorizedForSchool(schoolId));
+    }
+
+    match /schools/{schoolId}/midDayMealEntries/{id} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update: if isSignedIn() && (hasRole('Principal') || hasRole('Staff')) && isAuthorizedForSchool(schoolId);
+      allow delete: if isAdmin();
+    }
+
+    match /schools/{schoolId}/securityIncidents/{id} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update: if isSignedIn() && (hasRole('Principal') || hasRole('Staff')) && isAuthorizedForSchool(schoolId);
+      allow delete: if isAdmin();
+    }
+
+    match /schools/{schoolId}/cleaningLogs/{id} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update: if isSignedIn() && (hasRole('Principal') || hasRole('Staff')) && isAuthorizedForSchool(schoolId);
+      allow delete: if isAdmin();
+    }
+
+    match /schools/{schoolId}/assets/{assetId} {
+      allow get, list: if isAuthorizedForSchool(schoolId);
+      allow create, update: if isAdmin() || (hasRole('Principal') && isAuthorizedForSchool(schoolId));
+      allow delete: if isAdmin();
+    }
+
+    match /newsAndAlerts/{newsAndAlertId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,918 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user account within the ShikshaPoshan system, associated with a specific role and potentially a school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The unique email address of the user.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user within the system (e.g., Administrator, Principal, Teacher, Staff)."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School this user is associated with. (Relationship: School 1:N User). Can be null for system-level Administrators."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the user account is currently active."
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "role",
+        "createdAt",
+        "isActive"
+      ]
+    },
+    "School": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "School",
+      "type": "object",
+      "description": "Represents a government school being monitored by the system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the School entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the school."
+        },
+        "address": {
+          "type": "string",
+          "description": "The physical street address of the school."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the school is located."
+        },
+        "district": {
+          "type": "string",
+          "description": "The district where the school is located."
+        },
+        "state": {
+          "type": "string",
+          "description": "The state where the school is located."
+        },
+        "pincode": {
+          "type": "string",
+          "description": "The postal code of the school's location."
+        },
+        "establishmentYear": {
+          "type": "number",
+          "description": "The year the school was established."
+        },
+        "principalId": {
+          "type": "string",
+          "description": "Reference to the current Principal of the school. (Relationship: User 1:N School)"
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "The primary contact email for the school.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "The primary contact phone number for the school."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the school record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the school record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "address",
+        "city",
+        "district",
+        "state",
+        "pincode",
+        "establishmentYear",
+        "principalId",
+        "createdAt"
+      ]
+    },
+    "Classroom": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Classroom",
+      "type": "object",
+      "description": "Represents a specific classroom or section within a school for a given academic year.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Classroom entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name or designation of the classroom (e.g., 'Grade 5A', 'Kindergarten Section Blue')."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School the classroom belongs to. (Relationship: School 1:N Classroom)"
+        },
+        "academicYear": {
+          "type": "string",
+          "description": "The academic year this classroom pertains to (e.g., '2023-2024')."
+        },
+        "teacherId": {
+          "type": "string",
+          "description": "Reference to the primary Teacher assigned to this classroom. (Relationship: User 1:N Classroom)"
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the classroom, if needed."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "schoolId",
+        "academicYear",
+        "teacherId"
+      ]
+    },
+    "Student": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Student",
+      "type": "object",
+      "description": "Represents a student enrolled in a school, including personal details and academic context.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Student entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the student."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the student."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "The student's date of birth.",
+          "format": "date"
+        },
+        "gender": {
+          "type": "string",
+          "description": "The gender of the student (e.g., 'Male', 'Female', 'Other')."
+        },
+        "enrollmentNumber": {
+          "type": "string",
+          "description": "A unique enrollment number assigned to the student within the school."
+        },
+        "enrollmentDate": {
+          "type": "string",
+          "description": "The date when the student was enrolled in the school.",
+          "format": "date"
+        },
+        "classroomId": {
+          "type": "string",
+          "description": "Reference to the Classroom the student is currently assigned to. (Relationship: Classroom 1:N Student)"
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School the student is enrolled in. (Relationship: School 1:N Student)"
+        },
+        "parentGuardianName": {
+          "type": "string",
+          "description": "The full name of the student's parent or guardian."
+        },
+        "parentGuardianPhone": {
+          "type": "string",
+          "description": "The contact phone number for the student's parent or guardian."
+        },
+        "parentGuardianEmail": {
+          "type": "string",
+          "description": "The contact email for the student's parent or guardian.",
+          "format": "email"
+        },
+        "address": {
+          "type": "string",
+          "description": "The residential address of the student."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the student record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the student record was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "dateOfBirth",
+        "enrollmentNumber",
+        "enrollmentDate",
+        "classroomId",
+        "schoolId",
+        "parentGuardianName",
+        "createdAt"
+      ]
+    },
+    "Subject": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subject",
+      "type": "object",
+      "description": "Defines an academic subject offered within a school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Subject entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the subject (e.g., 'Mathematics', 'Science', 'Hindi')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the subject."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where this subject is offered. (Relationship: School 1:N Subject)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "schoolId"
+      ]
+    },
+    "AttendanceRecord": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AttendanceRecord",
+      "type": "object",
+      "description": "Records the attendance status of a student for a specific day and classroom.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AttendanceRecord entity."
+        },
+        "studentId": {
+          "type": "string",
+          "description": "Reference to the Student whose attendance is being recorded. (Relationship: Student 1:N AttendanceRecord)"
+        },
+        "classroomId": {
+          "type": "string",
+          "description": "Reference to the Classroom for which attendance is recorded. (Relationship: Classroom 1:N AttendanceRecord)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date for which attendance is recorded.",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "description": "The attendance status (e.g., 'Present', 'Absent', 'Late', 'Excused')."
+        },
+        "recordedByTeacherId": {
+          "type": "string",
+          "description": "Reference to the Teacher who recorded this attendance. (Relationship: User 1:N AttendanceRecord)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any additional notes regarding the attendance (e.g., reason for absence)."
+        }
+      },
+      "required": [
+        "id",
+        "studentId",
+        "classroomId",
+        "date",
+        "status",
+        "recordedByTeacherId"
+      ]
+    },
+    "Grade": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Grade",
+      "type": "object",
+      "description": "Stores the academic grades or marks obtained by a student for a specific subject and assessment.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Grade entity."
+        },
+        "studentId": {
+          "type": "string",
+          "description": "Reference to the Student who received the grade. (Relationship: Student 1:N Grade)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Reference to the Subject for which the grade was given. (Relationship: Subject 1:N Grade)"
+        },
+        "classroomId": {
+          "type": "string",
+          "description": "Reference to the Classroom context for this grade. (Relationship: Classroom 1:N Grade)"
+        },
+        "assessmentType": {
+          "type": "string",
+          "description": "The type of assessment (e.g., 'Quiz', 'Mid-Term Exam', 'Homework', 'Project')."
+        },
+        "score": {
+          "type": "number",
+          "description": "The score obtained by the student."
+        },
+        "maxScore": {
+          "type": "number",
+          "description": "The maximum possible score for the assessment."
+        },
+        "dateRecorded": {
+          "type": "string",
+          "description": "The date when the grade was recorded.",
+          "format": "date"
+        },
+        "recordedByTeacherId": {
+          "type": "string",
+          "description": "Reference to the Teacher who recorded this grade. (Relationship: User 1:N Grade)"
+        },
+        "academicYear": {
+          "type": "string",
+          "description": "The academic year in which the grade was recorded (e.g., '2023-2024')."
+        }
+      },
+      "required": [
+        "id",
+        "studentId",
+        "subjectId",
+        "classroomId",
+        "assessmentType",
+        "score",
+        "maxScore",
+        "dateRecorded",
+        "recordedByTeacherId",
+        "academicYear"
+      ]
+    },
+    "MidDayMealEntry": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MidDayMealEntry",
+      "type": "object",
+      "description": "Records daily data pertaining to the Mid-Day Meal program in a school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MidDayMealEntry entity."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where the mid-day meal was served. (Relationship: School 1:N MidDayMealEntry)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date the mid-day meal was served.",
+          "format": "date"
+        },
+        "menuServed": {
+          "type": "string",
+          "description": "Description of the meal served (e.g., 'Rice, Dal, Vegetable Curry')."
+        },
+        "quantityPrepared": {
+          "type": "number",
+          "description": "The estimated quantity of food prepared (e.g., in kg or servings)."
+        },
+        "quantityServedStudents": {
+          "type": "number",
+          "description": "The number of students served the meal."
+        },
+        "qualityRating": {
+          "type": "number",
+          "description": "A rating of the meal quality (e.g., on a 1-5 scale)."
+        },
+        "issuesObserved": {
+          "type": "string",
+          "description": "Any issues observed regarding the meal (e.g., taste, hygiene, quantity shortage)."
+        },
+        "recordedByStaffId": {
+          "type": "string",
+          "description": "Reference to the Staff member who recorded this entry. (Relationship: User 1:N MidDayMealEntry)"
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "date",
+        "menuServed",
+        "quantityServedStudents",
+        "recordedByStaffId"
+      ]
+    },
+    "SecurityIncident": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SecurityIncident",
+      "type": "object",
+      "description": "Records details of security incidents or observations within a school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the SecurityIncident entity."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where the incident occurred. (Relationship: School 1:N SecurityIncident)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date and time when the incident occurred or was observed.",
+          "format": "date-time"
+        },
+        "incidentType": {
+          "type": "string",
+          "description": "The type of security incident (e.g., 'Intrusion', 'Theft', 'Student Dispute', 'Hazard')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the incident."
+        },
+        "actionTaken": {
+          "type": "string",
+          "description": "Actions taken in response to the incident."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the incident (e.g., 'Reported', 'Investigating', 'Resolved', 'Closed')."
+        },
+        "recordedByStaffId": {
+          "type": "string",
+          "description": "Reference to the Staff member who recorded this incident. (Relationship: User 1:N SecurityIncident)"
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "date",
+        "incidentType",
+        "description",
+        "recordedByStaffId"
+      ]
+    },
+    "CleaningLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CleaningLog",
+      "type": "object",
+      "description": "Records daily cleaning activities and observations within a school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CleaningLog entity."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School where cleaning was performed. (Relationship: School 1:N CleaningLog)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date cleaning activities were logged for.",
+          "format": "date"
+        },
+        "area": {
+          "type": "string",
+          "description": "The area that was cleaned (e.g., 'Classrooms', 'Toilets', 'Corridors', 'Playground')."
+        },
+        "cleaningType": {
+          "type": "string",
+          "description": "The type of cleaning performed (e.g., 'Daily Clean', 'Deep Clean', 'Sanitization')."
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the cleaning activity (e.g., 'Completed', 'In Progress', 'Pending', 'Not Applicable')."
+        },
+        "issuesObserved": {
+          "type": "string",
+          "description": "Any issues observed related to cleanliness or facility maintenance."
+        },
+        "recordedByStaffId": {
+          "type": "string",
+          "description": "Reference to the Staff member who recorded this cleaning log. (Relationship: User 1:N CleaningLog)"
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "date",
+        "area",
+        "cleaningType",
+        "status",
+        "recordedByStaffId"
+      ]
+    },
+    "NewsAndAlert": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "NewsAndAlert",
+      "type": "object",
+      "description": "Stores system-wide announcements and alerts, visible to relevant user roles and/or schools.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the NewsAndAlert entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the news article or alert."
+        },
+        "content": {
+          "type": "string",
+          "description": "The full content of the news article or alert."
+        },
+        "publishDate": {
+          "type": "string",
+          "description": "The date and time when the news or alert was published.",
+          "format": "date-time"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Reference to the Administrator who authored the news or alert. (Relationship: User 1:N NewsAndAlert)"
+        },
+        "targetRole": {
+          "type": "string",
+          "description": "Specifies which user roles should see this news/alert ('All', 'Administrator', 'Principal', 'Teacher', 'Staff')."
+        },
+        "schoolIds": {
+          "type": "array",
+          "description": "An array of School IDs to target this news/alert. Empty if system-wide or for specific roles only. (Relationship: School N:N NewsAndAlert)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Optional date and time when the news or alert should no longer be displayed.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "content",
+        "publishDate",
+        "authorId",
+        "targetRole",
+        "schoolIds"
+      ]
+    },
+    "SchoolAsset": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SchoolAsset",
+      "type": "object",
+      "description": "Represents various assets within a school, including infrastructure, learning materials, uniforms, and books.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the SchoolAsset entity."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School this asset belongs to. (Relationship: School 1:N SchoolAsset)"
+        },
+        "assetType": {
+          "type": "string",
+          "description": "The category of the asset (e.g., 'Infrastructure', 'LearningMaterial', 'Uniform', 'Books', 'Other')."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name or identifier of the asset (e.g., 'Classroom Block A', 'Science Lab', 'Grade 5 Math Textbook Set', 'Winter Uniforms')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the asset."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of the asset (e.g., count of items, or size for infrastructure)."
+        },
+        "condition": {
+          "type": "string",
+          "description": "The current condition of the asset (e.g., 'Good', 'Needs Repair', 'Poor', 'New')."
+        },
+        "lastInspectionDate": {
+          "type": "string",
+          "description": "The date of the last inspection or update on the asset's condition.",
+          "format": "date"
+        },
+        "issuesReported": {
+          "type": "string",
+          "description": "Any issues reported regarding the asset."
+        },
+        "reportedByUserId": {
+          "type": "string",
+          "description": "Reference to the User (Principal or Administrator) who reported or last updated this asset's information. (Relationship: User 1:N SchoolAsset)"
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "assetType",
+        "name",
+        "description",
+        "quantity",
+        "condition",
+        "reportedByUserId"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores individual user profiles. The document ID is the Firebase Authentication UID. Includes 'role' and 'schoolId' for DBAC and school-specific authorization. Only the user themselves or administrators can read/write their profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user, corresponding to Firebase Authentication UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}",
+        "definition": {
+          "entityName": "School",
+          "schema": {
+            "$ref": "#/backend/entities/School"
+          },
+          "description": "Stores details of individual government schools. Accessed by administrators for full management and by principals of the respective school. 'principalId' is used for principal-specific authorization.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the school."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/classrooms/{classroomId}",
+        "definition": {
+          "entityName": "Classroom",
+          "schema": {
+            "$ref": "#/backend/entities/Classroom"
+          },
+          "description": "Stores classroom details within a specific school. Includes denormalized 'schoolId' (from path) and 'teacherId' for robust authorization independence. Principals manage classrooms in their school; teachers manage their assigned classrooms.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "classroomId",
+              "description": "The unique ID of the classroom."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/classrooms/{classroomId}/students/{studentId}",
+        "definition": {
+          "entityName": "Student",
+          "schema": {
+            "$ref": "#/backend/entities/Student"
+          },
+          "description": "Stores student details, nested under their classroom and school. Includes denormalized 'schoolId' and 'classroomId' (from path) for authorization independence. Accessed by principals for their school and teachers for their assigned classrooms.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "classroomId",
+              "description": "The unique ID of the parent classroom."
+            },
+            {
+              "name": "studentId",
+              "description": "The unique ID of the student."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/subjects/{subjectId}",
+        "definition": {
+          "entityName": "Subject",
+          "schema": {
+            "$ref": "#/backend/entities/Subject"
+          },
+          "description": "Stores academic subjects offered by a specific school. Includes denormalized 'schoolId' (from path) for authorization independence. Principals manage subjects in their school; teachers can view them.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "subjectId",
+              "description": "The unique ID of the subject."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/classrooms/{classroomId}/students/{studentId}/attendanceRecords/{attendanceRecordId}",
+        "definition": {
+          "entityName": "AttendanceRecord",
+          "schema": {
+            "$ref": "#/backend/entities/AttendanceRecord"
+          },
+          "description": "Records student attendance. Includes denormalized 'schoolId', 'classroomId', 'studentId', and 'recordedByTeacherId' for robust authorization independence. Teachers record attendance for their students; principals view for their school.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "classroomId",
+              "description": "The unique ID of the parent classroom."
+            },
+            {
+              "name": "studentId",
+              "description": "The unique ID of the parent student."
+            },
+            {
+              "name": "attendanceRecordId",
+              "description": "The unique ID of the attendance record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/classrooms/{classroomId}/students/{studentId}/grades/{gradeId}",
+        "definition": {
+          "entityName": "Grade",
+          "schema": {
+            "$ref": "#/backend/entities/Grade"
+          },
+          "description": "Stores academic grades for students. Includes denormalized 'schoolId', 'classroomId', 'studentId', 'subjectId', and 'recordedByTeacherId' for robust authorization independence. Teachers record grades for their students; principals view for their school.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "classroomId",
+              "description": "The unique ID of the parent classroom."
+            },
+            {
+              "name": "studentId",
+              "description": "The unique ID of the parent student."
+            },
+            {
+              "name": "gradeId",
+              "description": "The unique ID of the grade record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/midDayMealEntries/{midDayMealEntryId}",
+        "definition": {
+          "entityName": "MidDayMealEntry",
+          "schema": {
+            "$ref": "#/backend/entities/MidDayMealEntry"
+          },
+          "description": "Logs daily mid-day meal data for a specific school. Includes denormalized 'schoolId' (from path) and 'recordedByStaffId' for authorization independence. Staff record entries for their school; principals and administrators view them.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "midDayMealEntryId",
+              "description": "The unique ID of the mid-day meal entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/securityIncidents/{securityIncidentId}",
+        "definition": {
+          "entityName": "SecurityIncident",
+          "schema": {
+            "$ref": "#/backend/entities/SecurityIncident"
+          },
+          "description": "Records security incidents within a school. Includes denormalized 'schoolId' (from path) and 'recordedByStaffId' for authorization independence. Staff record incidents for their school; principals and administrators view them.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "securityIncidentId",
+              "description": "The unique ID of the security incident."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/cleaningLogs/{cleaningLogId}",
+        "definition": {
+          "entityName": "CleaningLog",
+          "schema": {
+            "$ref": "#/backend/entities/CleaningLog"
+          },
+          "description": "Records cleaning activities for a school. Includes denormalized 'schoolId' (from path) and 'recordedByStaffId' for authorization independence. Staff record logs for their school; principals and administrators view them.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "cleaningLogId",
+              "description": "The unique ID of the cleaning log entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/newsAndAlerts/{newsAndAlertId}",
+        "definition": {
+          "entityName": "NewsAndAlert",
+          "schema": {
+            "$ref": "#/backend/entities/NewsAndAlert"
+          },
+          "description": "Stores system-wide or targeted announcements. Includes 'authorId', 'targetRole', and 'schoolIds' array for authorization independence, enabling rules to determine visibility without 'get()' calls on other collections. Administrators manage all; other roles read relevant news.",
+          "params": [
+            {
+              "name": "newsAndAlertId",
+              "description": "The unique ID of the news or alert."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/assets/{assetId}",
+        "definition": {
+          "entityName": "SchoolAsset",
+          "schema": {
+            "$ref": "#/backend/entities/SchoolAsset"
+          },
+          "description": "Manages various assets belonging to a specific school. Includes denormalized 'schoolId' (from path) and 'reportedByUserId' for authorization independence. Principals manage assets in their school; relevant users view them.",
+          "params": [
+            {
+              "name": "schoolId",
+              "description": "The unique ID of the parent school."
+            },
+            {
+              "name": "assetId",
+              "description": "The unique ID of the school asset."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure for ShikshaPoshan is designed with a strong emphasis on security, scalability, and debuggability, adhering to the core design principles and strategy mandates. The overarching strategy is to leverage hierarchical paths for school-specific data and a flat collection for system-wide announcements, complemented by extensive denormalization for authorization independence.\n\n**Authorization Independence (CRITICAL):**\nThis is achieved primarily by ensuring that all authorization-relevant fields are present directly on the document being accessed. For instance, `schoolId` is denormalized into most subcollection documents (Classroom, Student, Subject, MidDayMealEntry, SecurityIncident, CleaningLog, SchoolAsset) and explicitly added to `AttendanceRecord` and `Grade` documents, even though it's part of their parent path. This eliminates the need for `get()` calls in security rules to retrieve parent data for authorization checks, making rules atomic, faster, and easier to debug. For user-specific authorization, `request.auth.uid` is matched against fields like `teacherId`, `principalId`, `recordedByStaffId`, `reportedByUserId`, and `authorId` directly on the target document. The `User` document itself (`/users/{uid}`) contains the user's `role` and `schoolId`, allowing rules to check the authenticated user's context without cross-document `get()` operations for *other* user data.\n\n**Structural Segregation (Homogeneous Security Posture):**\nCollections are structured such that all documents within a given path share similar security requirements. For example, all documents within `/schools/{schoolId}/classrooms` will have security rules defined for classrooms within a specific school. There's no mixing of public and private data within the same collection. This simplifies rule logic significantly, as rules can be applied uniformly to all documents at a particular path.\n\n**Querying for Authorized Paths (QAPs - Rules are not Filters):**\nThe hierarchical structure directly supports efficient and secure `list` operations. Users are expected to query for data they are explicitly authorized to access. For example, a Principal will query `/schools/{request.auth.schoolId}/classrooms` to see only classrooms within their school. A Teacher will query `/schools/{request.auth.schoolId}/classrooms` and might add a `where('teacherId', '==', request.auth.uid)` clause to see only their assigned classrooms. The `schoolId` is included in the path for most collections, allowing efficient filtering via Firestore's path-based security and indexing.\n\nFor the `/newsAndAlerts` collection, authorization is handled by the `targetRole` and `schoolIds` array fields on each document. Users performing a `list` operation will need to construct queries that include `where('targetRole', 'in', ['All', user.role])` or `where('schoolIds', 'array-contains', user.schoolId)` to retrieve only relevant news. Security rules will enforce that only documents matching these conditions are returned, preventing data leakage and upholding QAPs.\n\n**DBAC (Database-Based Access Control):**\nUser roles (`role`) and school associations (`schoolId`) are stored directly within the `/users/{uid}` documents. This allows security rules to evaluate `request.auth.uid`, retrieve the user's role and school context from their own `User` document, and then apply authorization logic without relying on custom claims or complex external services.\n\n**Invariants:**\nTimestamp fields (`createdAt`, `updatedAt`) are present on relevant entities to maintain integrity. Ownership (`principalId`, `teacherId`, `recordedByStaffId`, `authorId`, `reportedByUserId`) is clearly defined within documents, supporting rules that ensure only owners or authorized roles can modify or delete data. Denormalized fields (`schoolId`, `classroomId`) are critical invariants for consistent and efficient authorization."
+  }
+}
