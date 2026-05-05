@@ -5,7 +5,8 @@ import { DashboardLayout } from '@/components/dashboard-layout';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Upload, CheckCircle2, Circle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Upload, CheckCircle2, Circle, Plus } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 
 export default function StaffCleaning() {
@@ -15,6 +16,8 @@ export default function StaffCleaning() {
     { id: 3, name: 'Washroom Ground Floor', checked: false, photo: null },
     { id: 4, name: 'Playground Area', checked: false, photo: null },
   ]);
+  const [isAddingArea, setIsAddingArea] = useState(false);
+  const [newAreaName, setNewAreaName] = useState('');
 
   const handleCheckboxChange = (id: number) => {
     setAreas(areas.map(area => 
@@ -33,13 +36,59 @@ export default function StaffCleaning() {
     alert('Cleanliness report submitted successfully!');
   };
 
+  const handleAddArea = () => {
+    const trimmed = newAreaName.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    setAreas((prev) => [
+      ...prev,
+      { id: Date.now(), name: trimmed, checked: false, photo: null },
+    ]);
+    setNewAreaName('');
+    setIsAddingArea(false);
+  };
+
   return (
     <DashboardLayout role="staff">
       <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-headline font-bold text-primary">Cleanliness Report</h2>
-          <p className="text-muted-foreground">Complete daily cleanliness inspections for all areas</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-headline font-bold text-primary">Cleanliness Report</h2>
+            <p className="text-muted-foreground">Complete daily cleanliness inspections for all areas</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setIsAddingArea(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Add Area
+          </Button>
         </div>
+
+        {isAddingArea ? (
+          <Card className="border border-primary/10 bg-primary/5 p-4 shadow-sm">
+            <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+              <div>
+                <Label htmlFor="new-area" className="text-sm font-semibold text-muted-foreground">
+                  New area to supervise
+                </Label>
+                <Input
+                  id="new-area"
+                  value={newAreaName}
+                  onChange={(event) => setNewAreaName(event.target.value)}
+                  placeholder="Enter area name"
+                  className="mt-2"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" className="w-full" onClick={handleAddArea}>
+                  Add
+                </Button>
+                <Button size="sm" variant="outline" className="w-full" onClick={() => setIsAddingArea(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ) : null}
 
         <div className="space-y-4">
           {areas.map((area) => (
