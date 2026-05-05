@@ -62,7 +62,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link href="/volunteering">
-                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 font-bold px-12 py-7 text-xl rounded-xl backdrop-blur-sm">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-black px-12 py-7 text-xl rounded-xl shadow-2xl transition-transform hover:scale-105">
                     Join as Volunteer
                   </Button>
                 </Link>
