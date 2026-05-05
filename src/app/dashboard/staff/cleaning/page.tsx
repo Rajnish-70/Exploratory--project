@@ -14,19 +14,49 @@ export default function StaffCleaning() {
     { name: 'Staff Room & Office', status: 'Pending', time: '11:00 AM', progress: 0 },
     { name: 'Playground Perimeter', status: 'Scheduled', time: '02:00 PM', progress: 0 },
   ];
+  const cleaningSummary = [
+    { label: 'Classrooms', value: '12 / 20', tone: 'text-primary' },
+    { label: 'Washrooms', value: '4 / 4', tone: 'text-accent' },
+    { label: 'Kitchen Area', value: 'Sanitized', tone: 'text-emerald-600' },
+    { label: 'Next Review', value: '02:30 PM', tone: 'text-orange-500' },
+  ];
 
   return (
     <DashboardLayout role="staff">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-headline font-bold text-primary">Hygiene & Cleaning</h2>
+            <h2 className="text-2xl font-headline font-bold text-primary">Cleeaniness</h2>
             <p className="text-muted-foreground">Daily sanitation schedule and area checklists.</p>
           </div>
           <Button className="bg-accent">
             <Plus className="mr-2 h-4 w-4" /> New Task
           </Button>
         </div>
+
+        <Card className="border-t-4 border-t-primary">
+          <CardHeader>
+            <CardTitle className="text-lg font-headline font-bold">Cleaniness Overview</CardTitle>
+            <CardDescription>Quick view of hygiene checks and sanitation progress.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {cleaningSummary.map((item) => (
+                <div key={item.label} className="rounded-lg border bg-primary/5 p-4">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{item.label}</p>
+                  <p className={`mt-2 text-lg font-bold ${item.tone}`}>{item.value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-lg border border-dashed bg-muted/20 p-4">
+              <p className="text-sm font-semibold text-primary">Daily Note</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Deep cleaning is scheduled for the back corridor after lunch service, and the kitchen floor needs one final inspection before sign-off.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>

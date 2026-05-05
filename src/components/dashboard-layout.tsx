@@ -62,9 +62,9 @@ const NAVIGATION: Record<string, NavItem[]> = {
   ],
   staff: [
     { title: 'Home', href: '/dashboard/staff', icon: Home },
-    { title: 'Mid-Day Meal', href: '/dashboard/staff/meals', icon: Utensils },
+    { title: 'Stock Management', href: '/dashboard/staff/meals', icon: Utensils },
     { title: 'Security', href: '/dashboard/staff/security', icon: ShieldCheck },
-    { title: 'Cleaning', href: '/dashboard/staff/cleaning', icon: Trash2 },
+    { title: 'Cleeaniness', href: '/dashboard/staff/cleaning', icon: Trash2 },
   ],
 };
 
