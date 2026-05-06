@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard-layout';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Users, GraduationCap, Utensils, ShieldCheck, TrendingUp, BookOpen, Loader2, FileDown } from 'lucide-react';
+import { Users, GraduationCap, TrendingUp, BookOpen, Loader2, FileDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -134,6 +134,8 @@ export default function PrincipalHome() {
             </div>
           </CardContent>
         </Card>
+
+
       </div>
     </DashboardLayout>
   );
