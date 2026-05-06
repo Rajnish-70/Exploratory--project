@@ -34,6 +34,11 @@ export interface Student {
   schoolId: string;
   attendance: { date: string; status: 'present' | 'absent' }[];
   marks: { subject: string; score: number }[];
+  motherName?: string;
+  fatherName?: string;
+  guardianName?: string;
+  parentContact?: string;
+  address?: string;
 }
 
 export interface InfrastructureRecord {
@@ -46,11 +51,11 @@ export interface InfrastructureRecord {
 }
 
 export const MOCK_STUDENTS: Student[] = [
-  { id: '101', name: 'Rahul Sharma', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [] },
-  { id: '102', name: 'Priya Patel', class: '10-A', gender: 'female', schoolId: '1', attendance: [], marks: [] },
-  { id: '103', name: 'Amit Kumar', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [] },
-  { id: '104', name: 'Sneha Singh', class: '10-A', gender: 'female', schoolId: '1', attendance: [], marks: [] },
-  { id: '105', name: 'Vikram Yadav', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [] },
+  { id: '101', name: 'Rahul Sharma', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [], motherName: 'Priya Sharma', fatherName: 'Rajesh Sharma', parentContact: '+91 9876543210', address: '123 Main Street, Delhi 110001' },
+  { id: '102', name: 'Priya Patel', class: '10-A', gender: 'female', schoolId: '1', attendance: [], marks: [], motherName: 'Neha Patel', fatherName: 'Vikram Patel', parentContact: '+91 9876543211', address: '456 Oak Avenue, Delhi 110002' },
+  { id: '103', name: 'Amit Kumar', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [], motherName: 'Sunita Kumar', fatherName: 'Ramesh Kumar', parentContact: '+91 9876543212', address: '789 Elm Road, Delhi 110003' },
+  { id: '104', name: 'Sneha Singh', class: '10-A', gender: 'female', schoolId: '1', attendance: [], marks: [], guardianName: 'Mrs. Anjali Singh', parentContact: '+91 9876543213', address: '321 Pine Street, Delhi 110004' },
+  { id: '105', name: 'Vikram Yadav', class: '10-A', gender: 'male', schoolId: '1', attendance: [], marks: [], motherName: 'Rani Yadav', fatherName: 'Arun Yadav', parentContact: '+91 9876543214', address: '654 Birch Lane, Delhi 110005' },
 ];
 
 export const MOCK_USERS: User[] = [

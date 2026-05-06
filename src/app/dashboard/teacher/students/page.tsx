@@ -44,7 +44,10 @@ export default function TeacherStudents() {
   const students = useClassStudents(selectedClass);
   const [search, setSearch] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [form, setForm] = useState<StudentFormState>(emptyForm());
+  const [profileEdit, setProfileEdit] = useState({ motherName: '', fatherName: '', address: '' });
   const boysCount = students.filter((student) => student.gender === 'male').length;
   const girlsCount = students.filter((student) => student.gender === 'female').length;
   const otherCount = students.filter((student) => student.gender === 'other').length;
@@ -57,6 +60,29 @@ export default function TeacherStudents() {
         : student.name.toLowerCase().includes(query) || student.id.includes(query)
     );
   }, [search, students]);
+
+  const selectedAttendanceSummary = useMemo(() => {
+    if (!selectedStudent) return null;
+    const total = selectedStudent.attendance.length;
+    const present = selectedStudent.attendance.filter((record) => record.status === 'present').length;
+    const absent = total - present;
+    const percent = total > 0 ? Math.round((present / total) * 100) : 0;
+    const latest = [...selectedStudent.attendance]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 3);
+
+    return { total, present, absent, percent, latest };
+  }, [selectedStudent]);
+
+  const selectedMarksSummary = useMemo(() => {
+    if (!selectedStudent) return null;
+    const marks = selectedStudent.marks;
+    const average = marks.length
+      ? Math.round(marks.reduce((sum, record) => sum + record.score, 0) / marks.length)
+      : 0;
+
+    return { marks, average };
+  }, [selectedStudent]);
 
   const openAddDialog = () => {
     setForm({
@@ -177,7 +203,19 @@ export default function TeacherStudents() {
                       <Badge variant="outline" className="text-accent border-accent bg-accent/5">Regular</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedStudent(student);
+                          setProfileEdit({
+                            motherName: student.motherName || '',
+                            fatherName: student.fatherName || '',
+                            address: student.address || '',
+                          });
+                          setIsProfileOpen(true);
+                        }}
+                      >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </TableCell>
@@ -188,7 +226,7 @@ export default function TeacherStudents() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="bg-accent/5 border-accent/20">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-bold text-accent uppercase">Gender Ratio</CardTitle>
@@ -199,17 +237,6 @@ export default function TeacherStudents() {
                   {boysCount} Boys / {girlsCount} Girls{otherCount > 0 ? ` / ${otherCount} Other` : ''}
                 </p>
                 <Users className="h-8 w-8 text-accent opacity-20" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-primary/5 border-primary/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-bold text-primary uppercase">CWSN Students</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-end justify-between">
-                <p className="text-2xl font-bold">2 Students</p>
-                <Users className="h-8 w-8 text-primary opacity-20" />
               </div>
             </CardContent>
           </Card>
@@ -225,6 +252,138 @@ export default function TeacherStudents() {
             </CardContent>
           </Card>
         </div>
+
+        <Dialog open={isProfileOpen} onOpenChange={(open) => {
+          if (!open) setSelectedStudent(null);
+          setIsProfileOpen(open);
+        }}>
+          <DialogContent className="sm:max-w-[520px]">
+            <DialogHeader>
+              <DialogTitle>Student Profile</DialogTitle>
+              <DialogDescription>
+                Attendance and test marks for {selectedStudent?.name ?? 'the student'}.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 py-2">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Basic Details</p>
+                  <div className="rounded-lg border border-muted/50 bg-muted/10 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-primary">{selectedStudent?.name}</p>
+                        <p className="text-sm text-muted-foreground">Roll No. {selectedStudent?.id} · Grade {selectedStudent?.class}</p>
+                      </div>
+                      <Badge variant="secondary">{selectedStudent?.gender ?? 'Unknown'}</Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Parent/Guardian Information</p>
+                  <div className="rounded-lg border border-muted/50 bg-muted/10 p-4 space-y-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="mother-name">Mother's Name</Label>
+                      <Input
+                        id="mother-name"
+                        value={profileEdit.motherName}
+                        onChange={(e) => setProfileEdit({ ...profileEdit, motherName: e.target.value })}
+                        placeholder="Enter mother's name"
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="father-name">Father's Name</Label>
+                      <Input
+                        id="father-name"
+                        value={profileEdit.fatherName}
+                        onChange={(e) => setProfileEdit({ ...profileEdit, fatherName: e.target.value })}
+                        placeholder="Enter father's name"
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="address">Address</Label>
+                      <Input
+                        id="address"
+                        value={profileEdit.address}
+                        onChange={(e) => setProfileEdit({ ...profileEdit, address: e.target.value })}
+                        placeholder="Enter residential address"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-lg border border-muted/50 bg-muted/10 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-semibold">Attendance</p>
+                    <Badge variant="outline">{selectedAttendanceSummary?.percent ?? 0}% Present</Badge>
+                  </div>
+                  {selectedAttendanceSummary?.total ? (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>Total records</span>
+                        <span>{selectedAttendanceSummary.total}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>Present</span>
+                        <span>{selectedAttendanceSummary.present}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>Absent</span>
+                        <span>{selectedAttendanceSummary.absent}</span>
+                      </div>
+                      <div className="pt-2">
+                        <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Recent records</p>
+                        <div className="mt-2 space-y-2 text-sm">
+                          {selectedAttendanceSummary.latest.map((record) => (
+                            <div key={record.date} className="flex items-center justify-between rounded-lg bg-background px-3 py-2">
+                              <span>{record.date}</span>
+                              <span className={record.status === 'present' ? 'text-emerald-600' : 'text-rose-600'}>{record.status}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No attendance records available yet.</p>
+                  )}
+                </div>
+
+                <div className="rounded-lg border border-muted/50 bg-muted/10 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-semibold">Test Marks</p>
+                    <Badge variant="outline">Avg {selectedMarksSummary?.average ?? 0}</Badge>
+                  </div>
+                  {selectedMarksSummary?.marks.length ? (
+                    <div className="space-y-2 text-sm">
+                      {selectedMarksSummary.marks.map((record) => (
+                        <div key={`${record.subject}-${record.score}`} className="flex items-center justify-between rounded-lg bg-background px-3 py-2">
+                          <span>{record.subject}</span>
+                          <span className="font-semibold">{record.score}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No marks recorded yet.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsProfileOpen(false)}>
+                Close
+              </Button>
+              <Button className="bg-primary" onClick={() => setIsProfileOpen(false)}>
+                Save Changes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogContent className="sm:max-w-[460px]">
